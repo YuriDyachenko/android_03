@@ -35,7 +35,7 @@ public class Main {
                 }
                 case 2: {
                     //2. вариант реализации, когда совпадения ищутся только в начале
-                    //задуммного слова, до первого несовпадения
+                    //задуманного слова, до первого несовпадения
                     task2(scanner, showSecret);
                     break;
                 }
@@ -58,29 +58,24 @@ public class Main {
     public static void task1(Scanner scanner, boolean showSecret) {
         System.out.println("----------------- 1 -----------------");
 
+        Random random = new Random();
         do {
-            Random random = new Random();
             int secret = random.nextInt(10);
             int entered = -1;
 
-            String debugSecret = (showSecret) ? " (" + secret + ")" : "";
-
-            System.out.println();
-            System.out.printf("Программа \"задумала\" случайное число%s, у Вас есть ТРИ попытки, чтобы его угадать!\n", debugSecret);
+            System.out.printf("\nПрограмма \"задумала\" случайное число%s, у Вас есть ТРИ попытки, чтобы его угадать!\n",
+                    (showSecret) ? " (" + secret + ")" : "");
 
             for (int attempt = 1; attempt <= 3; attempt++) {
                 entered = readIntWithAttempt(attempt, scanner);
                 if (entered == secret) break;
-
-                System.out.printf("введенное число %d %s задуманного", entered, (entered < secret) ? "меньше" : "больше");
-                System.out.println();
+                System.out.printf("введенное число %d %s задуманного\n", entered, (entered < secret) ? "меньше" : "больше");
             }
 
             if (entered == secret) System.out.println("ВЫ УГАДАЛИ ЧИСЛО!");
-            else System.out.printf("ВЫ ПРОИГРАЛИ! Было задумано число: %d...", secret);
-            System.out.println();
+            else System.out.printf("ВЫ ПРОИГРАЛИ! Было задумано число: %d...\n", secret);
 
-            System.out.print("Повторить игру еще раз? 1 - да / 0 - нет: ");
+            System.out.print("\nПовторить игру еще раз? 1 - да / 0 - нет: ");
 
         } while (readIntWithCheckBounds(scanner, 0, 1) == 1);
 
@@ -113,10 +108,7 @@ public class Main {
         String[] words = createWords();
         String secretWord = randomWord(words);
 
-        String debugSecret = (showSecret) ? " (" + secretWord + ")" : "";
-
-        System.out.println();
-        System.out.printf("Программа \"задумала\" одно слово%s из:\n", debugSecret);
+        System.out.printf("\nПрограмма \"задумала\" одно слово%s из:\n", (showSecret) ? " (" + secretWord + ")" : "");
         outWords(words, 8);
 
         while (true) {
@@ -129,8 +121,10 @@ public class Main {
                 break;
             }
 
-            if (correct.length() == 0) System.out.printf("%s - не совпало ни одной начальной буквы!", answer);
-            else System.out.printf("%s - совпало %s!", answer, padRight(correct, '#', 15));
+            if (correct.length() == 0)
+                System.out.printf("%s - не совпало ни одной начальной буквы!", answer);
+            else
+                System.out.printf("%s - совпало %s!", answer, padRight(correct, '#', 15));
             System.out.println(" Попробуйте еще раз...");
         }
     }
@@ -147,8 +141,7 @@ public class Main {
     //выбор случайного слова из массива
     public static String randomWord(String[] words) {
         Random random = new Random();
-        int secretIndex = random.nextInt(words.length);
-        return words[secretIndex];
+        return words[random.nextInt(words.length)];
     }
 
     //для task2 и task2A
@@ -177,7 +170,8 @@ public class Main {
         int len = minInt(secret.length(), answer.length());
         for (int i = 0; i < len; i++) {
             char c = secret.charAt(i);
-            if (c == answer.charAt(i)) sb.append(c);
+            if (c != answer.charAt(i)) break;
+            sb.append(c);
         }
         return sb.toString();
     }
@@ -196,10 +190,7 @@ public class Main {
         String[] words = createWords();
         String secretWord = randomWord(words);
 
-        String debugSecret = (showSecret) ? " (" + secretWord + ")" : "";
-
-        System.out.println();
-        System.out.printf("Программа \"задумала\" одно слово%s из:\n", debugSecret);
+        System.out.printf("\nПрограмма \"задумала\" одно слово%s из:\n", (showSecret) ? " (" + secretWord + ")" : "");
         outWords(words, 8);
 
         while (true) {
