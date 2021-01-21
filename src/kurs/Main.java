@@ -185,8 +185,7 @@ public class Main {
     //для task2
     //возвращает минимальное из двух целых
     public static int minInt(int a, int b) {
-        if (a < b) return a;
-        else return b;
+        return (a < b) ? a : b;
     }
 
     //вариант реализации второй задачи, когда совпадения ищутся на своих местах
