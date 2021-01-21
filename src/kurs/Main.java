@@ -18,17 +18,39 @@ public class Main {
         //поэтому в каждый task его передаю
         Scanner scanner = new Scanner(System.in);
 
-        //1. угадайка с трех попыток
-        //на самом деле три попытки недостаточно для гарантированного угадывания
-        task1(scanner, showSecret);
-
-        //2. вариант реализации, когда совпадения ищутся только в начале
-        //задуммного слова, до первого несовпадения
-        task2(scanner, showSecret);
-
-        //2. вариант реализации, когда совпадения ищутся на своих местах
-        //по всему задуманному слову, а не только в его начале
-        task2A(scanner, showSecret);
+        boolean exit = false;
+        do {
+            System.out.println();
+            System.out.println("Доступны следующие задачи:");
+            System.out.println("1. Угадай число (task1)");
+            System.out.println("2. Угадай слово (совпадение только по начальным символам) (task2)");
+            System.out.println("3. Угадай слово (совпадение по всем символам) (task2A)");
+            System.out.print("Введите номер задачи (0 - для выхода): ");
+            switch (readIntWithCheckBounds(scanner, 0, 3)) {
+                case 1: {
+                    //1. угадайка с трех попыток
+                    //на самом деле три попытки недостаточно для гарантированного угадывания
+                    task1(scanner, showSecret);
+                    break;
+                }
+                case 2: {
+                    //2. вариант реализации, когда совпадения ищутся только в начале
+                    //задуммного слова, до первого несовпадения
+                    task2(scanner, showSecret);
+                    break;
+                }
+                case 3: {
+                    //2. вариант реализации, когда совпадения ищутся на своих местах
+                    //по всему задуманному слову, а не только в его начале
+                    task2A(scanner, showSecret);
+                    break;
+                }
+                case 0: {
+                    exit = true;
+                    break;
+                }
+            }
+        } while (!exit);
 
         scanner.close();
     }
@@ -41,8 +63,7 @@ public class Main {
             int secret = random.nextInt(10);
             int entered = -1;
 
-            String debugSecret = "";
-            if (showSecret) debugSecret = " (" + secret + ")";
+            String debugSecret = (showSecret) ? " (" + secret + ")" : "";
 
             System.out.println();
             System.out.printf("Программа \"задумала\" случайное число%s, у Вас есть ТРИ попытки, чтобы его угадать!\n", debugSecret);
@@ -51,15 +72,12 @@ public class Main {
                 entered = readIntWithAttempt(attempt, scanner);
                 if (entered == secret) break;
 
-                String res = "больше";
-                if (entered < secret) res = "меньше";
-
-                System.out.printf("введенное число %d %s задуманного", entered, res);
+                System.out.printf("введенное число %d %s задуманного", entered, (entered < secret) ? "меньше" : "больше");
                 System.out.println();
             }
 
             if (entered == secret) System.out.println("ВЫ УГАДАЛИ ЧИСЛО!");
-            else System.out.println("ВЫ ПРОИГРАЛИ!");
+            else System.out.printf("ВЫ ПРОИГРАЛИ! Было задумано число: %d...", secret);
             System.out.println();
 
             System.out.print("Повторить игру еще раз? 1 - да / 0 - нет: ");
@@ -78,6 +96,7 @@ public class Main {
     //для task1
     //вводит число с проверкой диаппазона
     //используется и для ввода угадываемого числа, и для ввода ответа 0/1
+    //и выбора номера задачи
     public static int readIntWithCheckBounds(Scanner scanner, int start, int finish) {
         int i;
         while (true) {
@@ -94,8 +113,7 @@ public class Main {
         String[] words = createWords();
         String secretWord = randomWord(words);
 
-        String debugSecret = "";
-        if (showSecret) debugSecret = " (" + secretWord + ")";
+        String debugSecret = (showSecret) ? " (" + secretWord + ")" : "";
 
         System.out.println();
         System.out.printf("Программа \"задумала\" одно слово%s из:\n", debugSecret);
@@ -147,21 +165,21 @@ public class Main {
     //для task2 и task2A
     //дополняет, если "надо", строку символами до нужной длины
     public static String padRight(String s, char c, int len) {
-        int howMach = len - s.length();
-        for (int i = 0; i < howMach; i++) s += c;
-        return s;
+        StringBuilder sb = new StringBuilder(s);
+        for (int i = 0; i < len - s.length(); i++) sb.append(c);
+        return sb.toString();
     }
 
     //для task2
     //ищет и возвращает первые совпадающие символы, до первого несовпадения
     public static String correctChars(String secret, String answer) {
-        String res = "";
+        StringBuilder sb = new StringBuilder();
         int len = minInt(secret.length(), answer.length());
         for (int i = 0; i < len; i++) {
             char c = secret.charAt(i);
-            if (c == answer.charAt(i)) res += c;
+            if (c == answer.charAt(i)) sb.append(c);
         }
-        return res;
+        return sb.toString();
     }
 
     //для task2
@@ -179,8 +197,7 @@ public class Main {
         String[] words = createWords();
         String secretWord = randomWord(words);
 
-        String debugSecret = "";
-        if (showSecret) debugSecret = " (" + secretWord + ")";
+        String debugSecret = (showSecret) ? " (" + secretWord + ")" : "";
 
         System.out.println();
         System.out.printf("Программа \"задумала\" одно слово%s из:\n", debugSecret);
@@ -210,18 +227,18 @@ public class Main {
     //если не было ни одного, то возвращает пусту, иначе не понять, были совпадения или нет
     public static String findMatches(String secret, String answer) {
         boolean hasMatches = false;
-        String matches = "";
+        StringBuilder matches = new StringBuilder();
         for (int i = 0; i < secret.length(); i++) {
             char c = secret.charAt(i);
             if (i >= answer.length() || c != answer.charAt(i)) {
-                matches += '#';
+                matches.append('#');
             } else {
-                matches += c;
+                matches.append(c);
                 hasMatches = true;
             }
         }
         if (!hasMatches) return "";
-        return padRight(matches, '#', 15);
+        return padRight(matches.toString(), '#', 15);
     }
 
 }
