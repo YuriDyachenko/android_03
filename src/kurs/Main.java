@@ -9,7 +9,7 @@ public class Main {
 
         //для отладки будем показывать задуманное число/слово
         //для "продакшн" можно выключить и не будет выводиться
-        boolean showSecret = false;
+        boolean showSecret = true;
 
         //столкнулся с ситуацией: если сканер создавать и закрывать в каждом task
         //то в следующем task при вызове next() выскакивает ошибка
@@ -112,7 +112,7 @@ public class Main {
             }
 
             if (correct.length() == 0) System.out.printf("%s - не совпало ни одной начальной буквы!", answer);
-            else System.out.printf("%s - совпало %s###############!", answer, correct);
+            else System.out.printf("%s - совпало %s!", answer, padRight(correct, '#', 15));
             System.out.println(" Попробуйте еще раз...");
         }
     }
@@ -142,6 +142,14 @@ public class Main {
             if ((i + 1) % wordsPerLine == 0) System.out.println();
         }
         System.out.println();
+    }
+
+    //для task2 и task2A
+    //дополняет, если "надо", строку символами до нужной длины
+    public static String padRight(String s, char c, int len) {
+        int howMach = len - s.length();
+        for (int i = 0; i < howMach; i++) s += c;
+        return s;
     }
 
     //для task2
@@ -195,14 +203,6 @@ public class Main {
 
             System.out.println(" Попробуйте еще раз...");
         }
-    }
-
-    //для task2A
-    //дополняет, если "надо", строку символами до нужной длины
-    public static String padRight(String s, char c, int len) {
-        int howMach = len - s.length();
-        for (int i = 0; i < howMach; i++) s += c;
-        return s;
     }
 
     //для task2A
